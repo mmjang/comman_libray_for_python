@@ -3,27 +3,29 @@ import matplotlib.pyplot as plt
 import os
 import re
 
-def plot_time_2d(fname, rmbk = True, save_fig = False):
+def plot_time_2d(ax, fname, rmbk = True):
     '''
     绘制时域系统dat数据二维图
-    plot_time_2d(fname, rmbk = True, save_fig = False)
+    用法:
+        fig, ax = plt.subplots(1,1)
+        plot_time_2d(ax, '20171123170725.dat')
+        fig.show()
+    参数:
     fname - dat 文件名
     rmbk - 是否去背景
     save_fig - 是否保存图片
     '''
+    frame_size = 1326
     f = open(fname,'rb')
     arr = np.fromfile(f, dtype=np.int16)
     arr = arr.reshape(int(arr.shape[0]/ (frame_size/2)),int(frame_size /2))
     signal = arr[:,5:5+640]
     mean = np.mean(signal.T,axis=1)
     if rmbk:
-        plt.imshow(arr[:,5:5+ 640] - mean)
+        out = ax.imshow(arr[:,5:5+ 640] - mean)
     else:
-        plt.imshow(arr[:,5:5+ 640])
-    if save_fig:
-        plt.savefig(fname + '.png')
-    else:
-        plt.show()
+        out = ax.imshow(arr[:,5:5+ 640])
+    return out
 
 def plot_all_in_directory(directory, rmbk = True):
     '''
@@ -31,7 +33,13 @@ def plot_all_in_directory(directory, rmbk = True):
     directory - 文件夹路径
     rmbk - 是否去直达波
     '''
-    for fname in [f for f in os.listdir(directory) if re.match(r'[0-9]+\.dat', f)]:
-        plot_time_2d(fname, rmbk = rmbk, save_fig = True)
-        print('{0} 已绘制并保存'.format(fname))
+    plt.ioff()
+    for fname in [f for f in os.listdir(directory) if re.match(r'[0-9]+\.dat$', f)]:
+        try:
+            fig, ax = plt.subplots(1,1)
+            plot_time_2d(ax, fname, rmbk = rmbk)
+            fig.savefig(fname + '.png')
+            print('{0} 已绘制并保存'.format(fname))
+        except Exception:
+            print('{0} 出错'.format(fname))
 
