@@ -24,6 +24,9 @@ def read_dat(fname, frame_size = 1326, number_of_points = 640, start_of_signal =
 
 def remove_background(data):
 
+    '''
+    对 read_dat 的结果平均去背景
+    '''
     mean = np.mean(data.T, axis = 1)
     return data - mean
 
@@ -37,7 +40,6 @@ def plot_time_2d(ax, fname, rmbk = True):
     参数:
     fname - dat 文件名
     rmbk - 是否去背景
-    save_fig - 是否保存图片
     '''
     signal = read_dat(fname)
     if rmbk:
