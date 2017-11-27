@@ -70,12 +70,32 @@ def position_range_list_to_binary_tag(length, pos_list):
     将目标位置范围列表转化为 0 1 列表
     length - 0, 1 列表的长度
     pos_list - 目标范围列表 [[a1, a2], [b1, b2]...] 
+
+    例子：
+    position_range_list_to_binary_tag(10, 
+                                  [
+                                      [1,4], [6,8]
+                                  ])
+    --> [0, 1, 1, 1, 1, 0, 1, 1, 1, 0]
     '''
     result = [0] * length;
     for rng in pos_list:
         for i in range(rng[0], rng[1] + 1):
             result[i] = 1
     return result
+
+def what_label(length, pos_list):
+    '''
+    将目标位置范围列表转化为 label 列表
+    length - 0, 1 列表的长度
+    pos_list - 目标范围列表 [[a1, a2], [b1, b2]...] 
+    '''
+    result = [[0,1]] * length;
+    for rng in pos_list:
+        for i in range(rng[0], rng[1] + 1):
+            result[i] = [1,0]
+    return result
+
 
 
 if __name__ == '__main__':
