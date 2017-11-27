@@ -54,14 +54,13 @@ def plot_all_in_directory(directory, rmbk = True):
     '''
     plt.ioff()
     for fname in [f for f in os.listdir(directory) if re.match(r'[0-9]+\.dat$', f)]:
-        try:
+        # try:
             fig, ax = plt.subplots(1,1)
-            im = plot_time_2d(ax, fname, rmbk = rmbk)
-            plot.colorbar(im)
+            im = plot_time_2d(ax, directory + fname, rmbk = rmbk)
             fig.savefig(fname + '.png')
             print('{0} 已绘制并保存'.format(fname))
-        except Exception:
-            print('{0} 出错'.format(fname))
+        # except Exception:
+        #     print('{0} 出错'.format(fname))
 
 if __name__ == '__main__':
 
