@@ -3,7 +3,7 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
-
+import scipy.io
 
 def read_dat(fname, frame_size = 1326, number_of_points = 640, start_of_signal = 5):
     '''
@@ -96,7 +96,25 @@ def what_label(length, pos_list):
             result[i] = [1,0]
     return result
 
+import scipy.io
 
+def toNP(x):
+    '''
+    convert matlab array in python to numpy array
+    x is a matlab array;
+    returns numpy array
+    '''
+    return np.array(x._data).reshape(x.size, order='F')
+
+def toMAT(eng, n_array):
+    '''
+    convert numpy array to matlab array
+    eng is the matlab engine in python
+    n_array is a numpy array;
+    returns matlab array
+    '''
+    scipy.io.savemat('temp', {'temp': n_array})
+    return eng.load('temp.mat')['temp']
 
 if __name__ == '__main__':
 
