@@ -3,6 +3,7 @@ import re
 
 import matplotlib.pyplot as plt
 import numpy as np
+from struct import *
 
 
 def read_dat(fname, frame_size = 1326, number_of_points = 640, start_of_signal = 5):
@@ -21,6 +22,37 @@ def read_dat(fname, frame_size = 1326, number_of_points = 640, start_of_signal =
     arr = arr.reshape(int(arr.shape[0] / (frame_size / 2)), int(frame_size / 2))
     signal = arr[:, start_of_signal : start_of_signal + number_of_points]
     return signal
+
+def read_dat_org(fname, frame_size = 1326, number_of_points = 640, start_of_signal = 5):
+    '''
+    读取时域系统 dat origin 数据
+    用法：
+        read_dat('test.dat')
+    参数：
+        fname - 文件名
+        frame_size - 帧长度
+        number_of_points - 信号点数
+        start_of_signal - 信号开始位置
+    ''' 
+    f = open(fname, 'rb')
+    f.seek(0)
+    all_bytes = bytearray(f.read())
+    all_bytes[0] == 0x9d
+
+    start0 = 0x7e
+    start1 = 0x5a
+
+    end0 = 0x33
+    end1 = 0x33
+
+    all_length = len(all_bytes)
+    result = []
+    for i in range(all_length - 1):
+        if all_bytes[i] == start0 and all_bytes[i + 1] == start1 \
+            and i + frame_size <= all_length and \
+            (all_bytes[i + frame_size - 2] == all_bytes[i + frame_size - 1]):
+            result.append(unpack('{0}h'.format(number_of_points), all_bytes[i + 10:i + 10 + number_of_points * 2]))
+    return np.array(result)
 
 def remove_background(data):
 
